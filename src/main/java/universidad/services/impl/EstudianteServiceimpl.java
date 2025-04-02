@@ -7,8 +7,8 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,27 +25,11 @@ public class EstudianteServiceimpl implements IEstudianteService{
     @Override
     public List<EstudianteDTO> obtenerTodosLosEstudiantes() {
         List<Estudiante> estudiantes = estudianteRepository.findAll();
-        List<EstudianteDTO> estudiantesDTO = new ArrayList<>();
-        for(Estudiante estudiante: estudiantes){
-            estudiantesDTO.add(EstudianteDTO.builder()
-                .id(estudiante.getId())
-                .nombre(estudiante.getNombre())
-                .apellido(estudiante.getApellido())
-                .email(estudiante.getEmail())
-                .fechaNacimiento(estudiante.getFechaNacimiento())
-                .numeroInscripcion(estudiante.getNumeroInscripcion())
-                .build());
-        }
-        return estudiantesDTO;
+        return estudiantes.stream()
+            .map(this::convertirEstudianteADTO)
+            .collect(Collectors.toList());
     }
-    
-    @Override
-    public EstudianteDTO crearEstudiante(EstudianteDTO estudianteDTO) {
-        Estudiante estudiante = convertirDTOaEstudiante(estudianteDTO);
-        Estudiante estudianteGuardado = estudianteRepository.save(estudiante);
-        return convertirEstudianteADTO(estudianteGuardado);
-    }
-    
+
     
 
     @Override
@@ -72,6 +56,14 @@ public class EstudianteServiceimpl implements IEstudianteService{
             throw new RuntimeException("Estudiante no encontrado con ID: " + id);
         }
     }
+
+    @Override
+    public EstudianteDTO obtenerEstudiantePorId(Long id) {
+        Estudiante estudiante = estudianteRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Estudiante no encontrado con ID: " + id));
+        return convertirEstudianteADTO(estudiante);
+    }
+
     /*
     @Override
     public List<EstudianteDTO> obtenerTodosLosEstudiantes() {
@@ -84,6 +76,12 @@ public class EstudianteServiceimpl implements IEstudianteService{
     }
     
 */
+    @Override
+    public EstudianteDTO crearEstudiante(EstudianteDTO estudianteDTO) {
+        Estudiante estudiante = convertirDTOaEstudiante(estudianteDTO);
+        Estudiante estudianteGuardado = estudianteRepository.save(estudiante);
+        return convertirEstudianteADTO(estudianteGuardado);
+    }
 
     private EstudianteDTO convertirEstudianteADTO(Estudiante estudiante){
         return EstudianteDTO.builder()

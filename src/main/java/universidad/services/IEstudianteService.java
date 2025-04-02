@@ -12,7 +12,7 @@ public interface IEstudianteService {
     EstudianteDTO crearEstudiante(EstudianteDTO estudianteDTO); 
     EstudianteDTO actualizarEstudiante(Long id, EstudianteDTO estudianteDTO);
     void eliminarEstudiante(Long id);
-    
+    EstudianteDTO obtenerEstudiantePorId(Long id);
 
 
 }

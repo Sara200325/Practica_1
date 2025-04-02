@@ -17,13 +17,12 @@ public class EstudianteRepository {
     private final AtomicLong idContador = new AtomicLong(); 
 
     public Estudiante save(Estudiante estudiante) {
-        if(estudiante.getId() == null) {
+        if (estudiante.getId() == null) {
             estudiante.setId(idContador.getAndIncrement());
         }
-    estudiantes.put(estudiante.getId(), estudiante);
-    return estudiante;
+        estudiantes.put(estudiante.getId(), estudiante);
+        return estudiante;
     }
-
     public List<Estudiante> findAll() {
         return new ArrayList<>(estudiantes.values());
     }
@@ -59,5 +58,6 @@ public class EstudianteRepository {
         
         save(estudiante1);
         save(estudiante2);
+
     }
 }
